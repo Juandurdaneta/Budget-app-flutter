@@ -36,15 +36,22 @@ class DisplayLatestMovements extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Ultimos movimientos',
                   style: TextStyle(fontSize: 17),
                 ),
-                Spacer(),
-                Text(
-                  'Ver todos',
-                  style: TextStyle(fontSize: 17, color: Colors.blueAccent),
+                const Spacer(),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: (() => Navigator.pop(context)),
+                  child: const Text(
+                    'Ver todos',
+                    style: TextStyle(fontSize: 17, color: Colors.blueAccent),
+                  ),
                 ),
               ],
             ),

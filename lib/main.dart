@@ -31,45 +31,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   // index
   int _selectedIndex = 0;
 
-  // transactions
-  final List<Transaction> _userTransaction = [
-    Transaction(
-      notes: 'New shoes',
-      amount: 129.99,
-      isExpense: true,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      notes: 'Dinner',
-      amount: 12.99,
-      isExpense: true,
-      date: DateTime.now(),
-    )
-  ];
-
-  // add new transaction
-
-  void _addNewTransaction(String txNotes, double txAmount, bool txIsExpense) {
-    final newTx = Transaction(
-      notes: txNotes,
-      amount: txAmount,
-      isExpense: txIsExpense,
-      date: DateTime.now(),
-    );
-  }
-
-  // styles
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
-
-  // list of widgets to display (texts)
+  // list of widgets to display
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
     AddTransaction(),
     Movements()
   ];
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -101,7 +70,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           )
         ],
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: onItemTapped,
         showSelectedLabels: false,
         showUnselectedLabels: false,
       ),

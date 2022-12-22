@@ -1,3 +1,4 @@
+import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
 
 class Movements extends StatefulWidget {
@@ -8,6 +9,14 @@ class Movements extends StatefulWidget {
 }
 
 class _MovementsState extends State<Movements> {
+  bool isExpense = true;
+
+  void selectMovement() {
+    setState(() {
+      isExpense = !isExpense;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,40 +33,7 @@ class _MovementsState extends State<Movements> {
             ),
             textAlign: TextAlign.left,
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: const Color.fromARGB(255, 69, 122, 157),
-            ),
-            height: 40.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  width: 120,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 6.0),
-                  child: const Text(
-                    'Gasto',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const Text('Ingreso',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color.fromARGB(255, 158, 208, 213),
-                    )),
-              ],
-            ),
-          ),
+          TransactionTypeSwitch(isExpense, selectMovement),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
