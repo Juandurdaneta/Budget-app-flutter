@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:ffi';
+
+import 'package:budget_app_flutter/models/transaction.dart';
 import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({super.key});
@@ -13,11 +18,72 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction> {
   bool isExpense = true;
   DateTime selectedDate = DateTime.now();
+  final notesController = TextEditingController();
+  final amountController = TextEditingController();
 
   void handleTransactionType() {
     setState(() {
       isExpense = !isExpense;
     });
+  }
+
+  Future<void> handleSubmit() async {
+    final enteredNotes = notesController.text;
+    final enteredAmount = double.parse(amountController.text);
+
+    final newTx = {
+      "notes": enteredNotes,
+      "amount": enteredAmount,
+      "isExpense": isExpense,
+      "date": selectedDate.toIso8601String(),
+    };
+
+    if (enteredNotes.isEmpty || enteredAmount < 0) {
+      return;
+    }
+
+    // CODE TO STORE DATA
+
+    // create storage
+    final storage = new FlutterSecureStorage();
+
+    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
+
+    if (previouslyStoredTXEncoded != null) {
+      List<dynamic> previouslyStoredTxDecoded =
+          jsonDecode(previouslyStoredTXEncoded);
+      previouslyStoredTxDecoded.add(newTx);
+      storage.write(
+          key: 'MOVEMENTS', value: jsonEncode(previouslyStoredTxDecoded));
+
+      print(previouslyStoredTXEncoded);
+    } else {
+      final List<Object> transactions = [];
+      transactions.add(newTx);
+      storage.write(key: 'MOVEMENTS', value: jsonEncode(transactions));
+    }
+
+    // if (previouslyStoredTxDecoded.length > 0) {
+    //   print('lenght is > 0');
+    // } else {
+    //   print('length is 0');
+    // }
+
+    // END CODE TO STORE DATA
+
+    amountController.text = "";
+    notesController.text = "";
+
+    setState(() {
+      selectedDate = DateTime.now();
+    });
+
+    const snackBar = SnackBar(
+      content: Text('Transaccion guardada exitosamente!'),
+      backgroundColor: Colors.green,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   // date selector
@@ -52,11 +118,15 @@ class _AddTransactionState extends State<AddTransaction> {
           ),
           TransactionTypeSwitch(isExpense, handleTransactionType),
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const TextField(
-              decoration: InputDecoration(labelText: 'Cuanto?'),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Cuanto?'),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              controller: amountController,
             ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Notas'),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Notas'),
+              controller: notesController,
             ),
             const SizedBox(height: 30),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -77,7 +147,7 @@ class _AddTransactionState extends State<AddTransaction> {
                   foregroundColor: Colors.black,
                   side: const BorderSide(width: 1.0, color: Colors.black),
                 ),
-                onPressed: (() {}),
+                onPressed: handleSubmit,
                 child: const Text(
                   'Agregar',
                   style: TextStyle(
