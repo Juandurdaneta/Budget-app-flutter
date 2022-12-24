@@ -3,9 +3,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TransactionCard extends StatelessWidget {
+class TransactionCards extends StatelessWidget {
   final List transactions;
-  TransactionCard(this.transactions);
+  TransactionCards(this.transactions);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TransactionCard extends StatelessWidget {
       (tx) {
         return Container(
           width: double.infinity,
-          margin: const EdgeInsets.only(bottom: 10.0),
+          margin: const EdgeInsets.only(bottom: 10.0, top: 2),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),

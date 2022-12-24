@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:budget_app_flutter/widgets/transaction_card.dart';
+import 'package:budget_app_flutter/widgets/transaction_cards.dart';
 import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -40,6 +40,7 @@ class _MovementsState extends State<Movements> {
     const storage = FlutterSecureStorage();
     String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
     List previouslyStoredTxDecoded = jsonDecode(previouslyStoredTXEncoded!);
+
     setState(() {
       transactions = previouslyStoredTxDecoded;
     });
@@ -72,8 +73,8 @@ class _MovementsState extends State<Movements> {
               padding: const EdgeInsets.all(15.0),
               child: transactions.isNotEmpty
                   ? isExpense
-                      ? TransactionCard(expensesValues)
-                      : TransactionCard(incomesValue)
+                      ? TransactionCards(expensesValues)
+                      : TransactionCards(incomesValue)
                   : Text('empty transactions!!!!'),
             ),
           )

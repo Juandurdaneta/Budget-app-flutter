@@ -1,6 +1,34 @@
+import 'package:budget_app_flutter/widgets/transaction_cards.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class DisplayLatestMovements extends StatelessWidget {
+class DisplayLatestMovements extends StatefulWidget {
+  const DisplayLatestMovements({super.key});
+
+  @override
+  State<DisplayLatestMovements> createState() => _DisplayLatestMovementsState();
+}
+
+class _DisplayLatestMovementsState extends State<DisplayLatestMovements> {
+  List transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTransactions();
+  }
+
+  void fetchTransactions() async {
+    const storage = FlutterSecureStorage();
+    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
+    List previouslyStoredTxDecoded = jsonDecode(previouslyStoredTXEncoded!);
+
+    setState(() {
+      transactions = previouslyStoredTxDecoded;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,26 +61,28 @@ class DisplayLatestMovements extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 20.0),
-              child: Center(
-                  child: Column(
-                children: const [
-                  Text(
-                    'Aun no se han agregado \nmovimientos...',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17),
+            transactions.isNotEmpty
+                ? TransactionCards(transactions)
+                : Container(
+                    margin: const EdgeInsets.only(top: 20.0),
+                    child: Center(
+                        child: Column(
+                      children: const [
+                        Text(
+                          'Aun no se han agregado \nmovimientos...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Text(
+                            'Agregar',
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                        ),
+                      ],
+                    )),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: Text(
-                      'Agregar',
-                      style: TextStyle(color: Colors.blueAccent),
-                    ),
-                  ),
-                ],
-              )),
-            ),
           ],
         ),
       ),

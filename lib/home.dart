@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
             AmountCard(true, 0),
           ],
         ),
-        DisplayLatestMovements()
+        const DisplayLatestMovements()
       ],
     );
   }

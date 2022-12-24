@@ -48,10 +48,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          child: _widgetOptions.elementAt(_selectedIndex),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
