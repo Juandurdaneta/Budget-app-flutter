@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:budget_app_flutter/widgets/transaction_card.dart';
 import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Movements extends StatefulWidget {
   const Movements({super.key});
@@ -10,10 +14,34 @@ class Movements extends StatefulWidget {
 
 class _MovementsState extends State<Movements> {
   bool isExpense = true;
+  List transactions = [];
 
   void selectMovement() {
     setState(() {
       isExpense = !isExpense;
+    });
+  }
+
+  List get expensesValues {
+    return transactions.where((tx) => tx['isExpense'] == true).toList();
+  }
+
+  List get incomesValue {
+    return transactions.where((tx) => tx['isExpense'] == false).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTransactions();
+  }
+
+  void fetchTransactions() async {
+    const storage = FlutterSecureStorage();
+    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
+    List previouslyStoredTxDecoded = jsonDecode(previouslyStoredTXEncoded!);
+    setState(() {
+      transactions = previouslyStoredTxDecoded;
     });
   }
 
@@ -35,41 +63,18 @@ class _MovementsState extends State<Movements> {
           ),
           TransactionTypeSwitch(isExpense, selectMovement),
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: const Color.fromRGBO(238, 238, 238, 1),
             ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 20.0),
-                        child: Center(
-                            child: Column(
-                          children: const [
-                            Text(
-                              'Aun no se han agregado \nmovimientos...',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 17),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(15.0),
-                              child: Text(
-                                'Agregar',
-                                style: TextStyle(color: Colors.blueAccent),
-                              ),
-                            ),
-                          ],
-                        )),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              child: transactions.isNotEmpty
+                  ? isExpense
+                      ? TransactionCard(expensesValues)
+                      : TransactionCard(incomesValue)
+                  : Text('empty transactions!!!!'),
             ),
           )
         ],

@@ -45,7 +45,7 @@ class _AddTransactionState extends State<AddTransaction> {
     // CODE TO STORE DATA
 
     // create storage
-    final storage = new FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
 
     String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
 
