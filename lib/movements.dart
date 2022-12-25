@@ -40,7 +40,8 @@ class _MovementsState extends State<Movements> {
   void fetchTransactions() async {
     final prefs = await SharedPreferences.getInstance();
     final String? encodedTx = prefs.getString('MOVEMENTS');
-    List previouslyStoredTxDecoded = jsonDecode(encodedTx!);
+    List previouslyStoredTxDecoded =
+        encodedTx != null ? jsonDecode(encodedTx) : [];
 
     setState(() {
       transactions = previouslyStoredTxDecoded;
