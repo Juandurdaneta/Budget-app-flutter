@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AmountCard extends StatelessWidget {
   final bool isExpense;
-  final int amount;
+  final double amount;
 
   AmountCard(this.isExpense, this.amount);
 

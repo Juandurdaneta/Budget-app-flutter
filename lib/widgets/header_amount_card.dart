@@ -21,7 +21,7 @@ class HeaderAmountCard extends StatelessWidget {
                   style: TextStyle(fontSize: 18),
                 ),
                 Text(
-                  '\$${amount.floor()}',
+                  '\$${amount.toStringAsFixed(2)}',
                   style: const TextStyle(
                       fontSize: 25, fontWeight: FontWeight.bold),
                 )
