@@ -31,17 +31,19 @@ class TransactionCards extends StatelessWidget {
                       "${tx['notes']}",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 17,
+                        fontSize: 18,
                       ),
                     ),
                     Text(DateFormat.yMMMd().format(DateTime.parse(tx['date'])))
                   ],
                 ),
-                Text(
-                  "${tx['isExpense'] ? '-' : ''}\$${tx['amount'].toStringAsFixed(2)}",
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: tx['isExpense'] ? Colors.red : Colors.green),
+                FittedBox(
+                  child: Text(
+                    "${tx['isExpense'] ? '-' : ''}\$${tx['amount'].toStringAsFixed(2)}",
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: tx['isExpense'] ? Colors.red : Colors.green),
+                  ),
                 )
               ],
             ),

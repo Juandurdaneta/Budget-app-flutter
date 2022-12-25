@@ -1,9 +1,9 @@
 import 'dart:ffi';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:budget_app_flutter/widgets/amount_card.dart';
 import 'package:budget_app_flutter/widgets/display_latest.dart';
 import 'package:budget_app_flutter/widgets/header_amount_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -24,9 +24,9 @@ class _HomeState extends State<Home> {
   }
 
   void fetchTransactions() async {
-    const storage = FlutterSecureStorage();
-    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
-    List previouslyStoredTxDecoded = jsonDecode(previouslyStoredTXEncoded!);
+    final prefs = await SharedPreferences.getInstance();
+    final String? encodedTx = prefs.getString('MOVEMENTS');
+    List previouslyStoredTxDecoded = jsonDecode(encodedTx!);
 
     setState(() {
       transactions = previouslyStoredTxDecoded;

@@ -6,7 +6,7 @@ import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({super.key});
@@ -45,29 +45,20 @@ class _AddTransactionState extends State<AddTransaction> {
     // CODE TO STORE DATA
 
     // create storage
-    const storage = FlutterSecureStorage();
 
-    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
+    final prefs = await SharedPreferences.getInstance();
 
-    if (previouslyStoredTXEncoded != null) {
-      List<dynamic> previouslyStoredTxDecoded =
-          jsonDecode(previouslyStoredTXEncoded);
-      previouslyStoredTxDecoded.add(newTx);
-      storage.write(
-          key: 'MOVEMENTS', value: jsonEncode(previouslyStoredTxDecoded));
+    final String? encodedTx = prefs.getString('MOVEMENTS');
 
-      print(previouslyStoredTXEncoded);
+    if (encodedTx != null) {
+      List decodedTx = jsonDecode(encodedTx);
+      decodedTx.add(newTx);
+      await prefs.setString('MOVEMENTS', jsonEncode(decodedTx));
     } else {
-      final List<Object> transactions = [];
-      transactions.add(newTx);
-      storage.write(key: 'MOVEMENTS', value: jsonEncode(transactions));
+      final List<Object> txList = [];
+      txList.add(newTx);
+      await prefs.setString('MOVEMENTS', jsonEncode(txList));
     }
-
-    // if (previouslyStoredTxDecoded.length > 0) {
-    //   print('lenght is > 0');
-    // } else {
-    //   print('length is 0');
-    // }
 
     // END CODE TO STORE DATA
 

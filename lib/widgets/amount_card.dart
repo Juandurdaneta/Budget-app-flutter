@@ -20,10 +20,12 @@ class AmountCard extends StatelessWidget {
               isExpense ? 'Egreso total' : 'Ingreso Total',
               style: const TextStyle(fontSize: 18.0),
             ),
-            Text(
-              isExpense ? '-\$$amount' : '\$$amount',
-              style:
-                  const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            FittedBox(
+              child: Text(
+                isExpense ? '-\$$amount' : '\$$amount',
+                style: const TextStyle(
+                    fontSize: 24.0, fontWeight: FontWeight.bold),
+              ),
             )
           ],
         ),

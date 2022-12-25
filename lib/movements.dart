@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:budget_app_flutter/widgets/no_movements_text.dart';
 import 'package:budget_app_flutter/widgets/transaction_cards.dart';
 import 'package:budget_app_flutter/widgets/transaction_switch.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Movements extends StatefulWidget {
   const Movements({super.key});
@@ -26,7 +27,7 @@ class _MovementsState extends State<Movements> {
     return transactions.where((tx) => tx['isExpense'] == true).toList();
   }
 
-  List get incomesValue {
+  List get incomeValues {
     return transactions.where((tx) => tx['isExpense'] == false).toList();
   }
 
@@ -37,9 +38,9 @@ class _MovementsState extends State<Movements> {
   }
 
   void fetchTransactions() async {
-    const storage = FlutterSecureStorage();
-    String? previouslyStoredTXEncoded = await storage.read(key: 'MOVEMENTS');
-    List previouslyStoredTxDecoded = jsonDecode(previouslyStoredTXEncoded!);
+    final prefs = await SharedPreferences.getInstance();
+    final String? encodedTx = prefs.getString('MOVEMENTS');
+    List previouslyStoredTxDecoded = jsonDecode(encodedTx!);
 
     setState(() {
       transactions = previouslyStoredTxDecoded;
@@ -71,11 +72,13 @@ class _MovementsState extends State<Movements> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: transactions.isNotEmpty
-                  ? isExpense
+              child: isExpense
+                  ? expensesValues.isNotEmpty
                       ? TransactionCards(expensesValues)
-                      : TransactionCards(incomesValue)
-                  : Text('empty transactions!!!!'),
+                      : const NoMovementsFound(displayText: 'gastos')
+                  : incomeValues.isNotEmpty
+                      ? TransactionCards(incomeValues)
+                      : const NoMovementsFound(displayText: 'ingresos'),
             ),
           )
         ],
