@@ -29,9 +29,29 @@ class _HomeState extends State<Home> {
     List previouslyStoredTxDecoded =
         encodedTx != null ? jsonDecode(encodedTx) : [];
 
+    previouslyStoredTxDecoded.sort(((a, b) => b['date'].compareTo(a['date'])));
+
     setState(() {
       transactions = previouslyStoredTxDecoded;
     });
+  }
+
+  Future<void> _deleteTransaction(transaction) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? encodedTx = prefs.getString('MOVEMENTS');
+    List previouslyStoredTxDecoded =
+        encodedTx != null ? jsonDecode(encodedTx) : [];
+
+    previouslyStoredTxDecoded
+        .removeWhere((tx) => tx['id'] == transaction['id']);
+
+    await prefs.setString('MOVEMENTS', jsonEncode(previouslyStoredTxDecoded));
+
+    setState(() {
+      transactions = previouslyStoredTxDecoded;
+    });
+
+    Navigator.of(context).pop();
   }
 
   double get totalAmount {
@@ -77,6 +97,7 @@ class _HomeState extends State<Home> {
         ),
         DisplayLatestMovements(
           transactions: transactions,
+          deleteTransactions: _deleteTransaction,
         )
       ],
     );

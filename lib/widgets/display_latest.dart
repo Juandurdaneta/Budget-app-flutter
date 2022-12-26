@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 
 class DisplayLatestMovements extends StatefulWidget {
   final List transactions;
-  const DisplayLatestMovements({super.key, required this.transactions});
+  final Function deleteTransactions;
+  const DisplayLatestMovements(
+      {super.key,
+      required this.transactions,
+      required this.deleteTransactions});
 
   @override
   State<DisplayLatestMovements> createState() => _DisplayLatestMovementsState();
@@ -34,7 +38,7 @@ class _DisplayLatestMovementsState extends State<DisplayLatestMovements> {
                     padding: EdgeInsets.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  onPressed: (() => (print('hello'))),
+                  onPressed: (() => {}),
                   child: const Text(
                     'Ver todos',
                     style: TextStyle(fontSize: 17, color: Colors.blueAccent),
@@ -43,7 +47,8 @@ class _DisplayLatestMovementsState extends State<DisplayLatestMovements> {
               ],
             ),
             widget.transactions.isNotEmpty
-                ? TransactionCards(widget.transactions)
+                ? TransactionCards(
+                    widget.transactions, widget.deleteTransactions)
                 : Container(
                     margin: const EdgeInsets.only(top: 20.0),
                     child: Center(

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({super.key});
@@ -30,8 +31,10 @@ class _AddTransactionState extends State<AddTransaction> {
   Future<void> handleSubmit() async {
     final enteredNotes = notesController.text;
     final enteredAmount = double.parse(amountController.text);
+    var uuid = Uuid();
 
     final newTx = {
+      "id": uuid.v1(),
       "notes": enteredNotes,
       "amount": enteredAmount,
       "isExpense": isExpense,

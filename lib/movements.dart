@@ -43,9 +43,29 @@ class _MovementsState extends State<Movements> {
     List previouslyStoredTxDecoded =
         encodedTx != null ? jsonDecode(encodedTx) : [];
 
+    previouslyStoredTxDecoded.sort(((a, b) => b['date'].compareTo(a['date'])));
+
     setState(() {
       transactions = previouslyStoredTxDecoded;
     });
+  }
+
+  Future<void> _deleteTransaction(transaction) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? encodedTx = prefs.getString('MOVEMENTS');
+    List previouslyStoredTxDecoded =
+        encodedTx != null ? jsonDecode(encodedTx) : [];
+
+    previouslyStoredTxDecoded
+        .removeWhere((tx) => tx['id'] == transaction['id']);
+
+    await prefs.setString('MOVEMENTS', jsonEncode(previouslyStoredTxDecoded));
+
+    setState(() {
+      transactions = previouslyStoredTxDecoded;
+    });
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -75,10 +95,10 @@ class _MovementsState extends State<Movements> {
               padding: const EdgeInsets.all(15.0),
               child: isExpense
                   ? expensesValues.isNotEmpty
-                      ? TransactionCards(expensesValues)
+                      ? TransactionCards(expensesValues, _deleteTransaction)
                       : const NoMovementsFound(displayText: 'gastos')
                   : incomeValues.isNotEmpty
-                      ? TransactionCards(incomeValues)
+                      ? TransactionCards(incomeValues, _deleteTransaction)
                       : const NoMovementsFound(displayText: 'ingresos'),
             ),
           )
