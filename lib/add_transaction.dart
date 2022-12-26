@@ -29,55 +29,63 @@ class _AddTransactionState extends State<AddTransaction> {
   }
 
   Future<void> handleSubmit() async {
-    final enteredNotes = notesController.text;
-    final enteredAmount = double.parse(amountController.text);
-    var uuid = Uuid();
+    try {
+      final enteredNotes = notesController.text;
+      final enteredAmount = double.parse(amountController.text);
+      var uuid = Uuid();
 
-    final newTx = {
-      "id": uuid.v1(),
-      "notes": enteredNotes,
-      "amount": enteredAmount,
-      "isExpense": isExpense,
-      "date": selectedDate.toIso8601String(),
-    };
+      final newTx = {
+        "id": uuid.v1(),
+        "notes": enteredNotes,
+        "amount": enteredAmount,
+        "isExpense": isExpense,
+        "date": selectedDate.toIso8601String(),
+      };
 
-    if (enteredNotes.isEmpty || enteredAmount < 0) {
-      return;
+      if (enteredNotes.isEmpty || enteredAmount < 0) {
+        return;
+      }
+
+      // CODE TO STORE DATA
+
+      // create storage
+
+      final prefs = await SharedPreferences.getInstance();
+
+      final String? encodedTx = prefs.getString('MOVEMENTS');
+
+      if (encodedTx != null) {
+        List decodedTx = jsonDecode(encodedTx);
+        decodedTx.add(newTx);
+        await prefs.setString('MOVEMENTS', jsonEncode(decodedTx));
+      } else {
+        final List<Object> txList = [];
+        txList.add(newTx);
+        await prefs.setString('MOVEMENTS', jsonEncode(txList));
+      }
+
+      // END CODE TO STORE DATA
+
+      amountController.text = "";
+      notesController.text = "";
+
+      setState(() {
+        selectedDate = DateTime.now();
+      });
+      const snackBar = SnackBar(
+        content: Text('Transaccion guardada exitosamente!'),
+        backgroundColor: Colors.green,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      var snackBar = SnackBar(
+        content: Text('Algo ha salido mal... \n${e.toString()}'),
+        backgroundColor: Colors.red,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
-    // CODE TO STORE DATA
-
-    // create storage
-
-    final prefs = await SharedPreferences.getInstance();
-
-    final String? encodedTx = prefs.getString('MOVEMENTS');
-
-    if (encodedTx != null) {
-      List decodedTx = jsonDecode(encodedTx);
-      decodedTx.add(newTx);
-      await prefs.setString('MOVEMENTS', jsonEncode(decodedTx));
-    } else {
-      final List<Object> txList = [];
-      txList.add(newTx);
-      await prefs.setString('MOVEMENTS', jsonEncode(txList));
-    }
-
-    // END CODE TO STORE DATA
-
-    amountController.text = "";
-    notesController.text = "";
-
-    setState(() {
-      selectedDate = DateTime.now();
-    });
-
-    const snackBar = SnackBar(
-      content: Text('Transaccion guardada exitosamente!'),
-      backgroundColor: Colors.green,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   // date selector
