@@ -22,7 +22,9 @@ class AmountCard extends StatelessWidget {
             ),
             FittedBox(
               child: Text(
-                isExpense ? '-\$$amount' : '\$$amount',
+                isExpense
+                    ? '-\$${amount.toStringAsFixed(2)}'
+                    : '\$${amount.toStringAsFixed(2)}',
                 style: const TextStyle(
                     fontSize: 24.0, fontWeight: FontWeight.bold),
               ),

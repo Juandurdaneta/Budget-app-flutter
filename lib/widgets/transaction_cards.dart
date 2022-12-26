@@ -24,18 +24,21 @@ class TransactionCards extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${tx['notes']}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${tx['notes']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                    Text(DateFormat.yMMMd().format(DateTime.parse(tx['date'])))
-                  ],
+                      Text(
+                          DateFormat.yMMMd().format(DateTime.parse(tx['date'])))
+                    ],
+                  ),
                 ),
                 FittedBox(
                   child: Text(
