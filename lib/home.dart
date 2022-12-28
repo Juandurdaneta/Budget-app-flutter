@@ -47,6 +47,8 @@ class _HomeState extends State<Home> {
 
     await prefs.setString('MOVEMENTS', jsonEncode(previouslyStoredTxDecoded));
 
+    previouslyStoredTxDecoded.sort(((a, b) => b['date'].compareTo(a['date'])));
+
     setState(() {
       transactions = previouslyStoredTxDecoded;
     });

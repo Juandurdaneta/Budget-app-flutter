@@ -15,7 +15,7 @@ class _TransactionTypeSwitchState extends State<TransactionTypeSwitch> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      padding: const EdgeInsets.all(10.0),
       margin: const EdgeInsets.symmetric(vertical: 20.0),
       width: double.infinity,
       height: 50,
